@@ -308,17 +308,18 @@ if selected_province != 'Select Province':
 # tab1.dataframe(st.session_state["df"])
 df = st.session_state["df"]
 df = df[['sell_order','type','img0','img1']]
-tab1.data_editor(
-    df,
-    #column_config={
-    #    "img0": st.column_config.ImageColumn("img0", help="Streamlit app preview screenshots",width='large'),
-    #    "img1": st.column_config.ImageColumn("img1", help="Streamlit app preview screenshots")
+tab1.write(df)
+# tab1.data_editor(
+#     df,
+#     column_config={
+#         "img0": st.column_config.ImageColumn("img0", help="Streamlit app preview screenshots",width='large'),
+#         "img1": st.column_config.ImageColumn("img1", help="Streamlit app preview screenshots")
 
-    #},
-    hide_index=True,
-    height = 1000,
-    # use_container_width = True
-)
+#     },
+#     hide_index=True,
+#     height = 1000,
+#     # use_container_width = True
+# )
 
 with tab2:
     map = create_map(st.session_state["df"])

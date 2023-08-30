@@ -234,7 +234,7 @@ def create_map(df):
     satellite_tiles = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
     folium.TileLayer(tiles=satellite_tiles, attr="Esri World Imagery", name="Satellite").add_to(map)
     # folium.TileLayer(tiles='Stamen Terrain',name="Satellite2").add_to(map)
-    folium.LayerControl().add_to(map)
+    folium.LayerControl(position='topleft').add_to(map)
 
     return map
 

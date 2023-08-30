@@ -140,20 +140,35 @@ def create_map(df):
             #   <h4><a href="{row['link']}" target="_blank">{'{:,}'.format(int(row['max_price']))}</a></h4>
             #   <img src="{row['img0']}" alt="Trulli" style="max-width:100%;max-height:100%">"""
 
-            H = ["<h2>{row['type']}</h2>",
-                "<h5>{row['tumbon']},{row['aumper']},{row['province']}</h5>",
-                "<h5>{A}</h5>",
-                "<h5>นัด{int(row['bid_time'])} : {datetime.strptime(str(int(row['lastSta_date'])), '%Y%m%d').strftime('%d/%m/%Y')} {row['lastSta_detail']}</h5>",
-                "<h5>{row['status']}</h5>",
-                "<h4><a href='{row['link']}' target='_blank'>{'{:,}'.format(int(row['max_price']))}</a></h4>",
-                "<img src='{row['img0']}' alt='Trulli' style='max-width:100%;max-height:100%'>"]
-            
-            htm = ''
-            for h in H:
-                try:
-                    htm += f"{h}"
-                except:
-                    pass
+            htm = ""
+            try:
+                htm += f"<h2>{row['type']}</h2>"
+            except:
+                pass
+            try:
+                htm += f"<h5>{row['tumbon']},{row['aumper']},{row['province']}</h5>"
+            except:
+                pass
+            try:
+                htm += f"<h5>{A}</h5>"
+            except:
+                pass
+            try:
+                htm += f"<h5>นัด{int(row['bid_time'])} : {datetime.strptime(str(int(row['lastSta_date'])), '%Y%m%d').strftime('%d/%m/%Y')} {row['lastSta_detail']}</h5>"
+            except:
+                pass
+            try:
+                htm += f"<h5>{row['status']}</h5>"
+            except:
+                pass
+            try:
+                htm += f"<h4><a href='{row['link']}' target='_blank'>{'{:,}'.format(int(row['max_price']))}</a></h4>"
+            except:
+                pass
+            try:
+                htm += f"<img src='{row['img0']}' alt='Trulli' style='max-width:100%;max-height:100%'>"
+            except:
+                pass
             
           
 

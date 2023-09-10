@@ -391,11 +391,11 @@ if st.session_state["current_id"]:
         st.session_state["df"] = dfs
 
         #-------------------------------------------------------
-        if st.sidebar.button('Map') #,use_container_width=True):
+        if st.sidebar.button('Map'): #,use_container_width=True):
             st.session_state.sidebar_state = 'collapsed'
             st.session_state["stage"] = 'map'
             st.experimental_rerun()
-        if st.sidebar.button('Lists') #,use_container_width=True):
+        if st.sidebar.button('Lists'): #,use_container_width=True):
             st.session_state.sidebar_state = 'collapsed'
             st.session_state["stage"] = 'lists'
             st.experimental_rerun()

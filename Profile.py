@@ -4,12 +4,12 @@ from hash import hash_password,verify_password,load_users,save_users,isEmail
 import datetime
 from sent_email import sent_otp
 import random
-from streamlit.source_util import (
-    page_icon_and_name, 
-    calc_md5, 
-    get_pages,
-    _on_pages_changed
-)
+# from streamlit.source_util import (
+#     page_icon_and_name, 
+#     calc_md5, 
+#     get_pages,
+#     _on_pages_changed
+# )
 from pathlib import Path
 
 from streamlit_js_eval import streamlit_js_eval
@@ -25,24 +25,24 @@ if "screen_width" not in st.session_state:
 
 
 # # hide show pages https://discuss.streamlit.io/t/hide-show-pages-in-multipage-app-based-on-conditions/28642/6
-def add_page(main_script_path_str, page_name):
+# def add_page(main_script_path_str, page_name):
     
-    pages = get_pages(main_script_path_str)
-    main_script_path = Path(main_script_path_str)
-    pages_dir = main_script_path.parent / "pages"
-    script_path = [f for f in pages_dir.glob("*.py") if f.name.find(page_name) != -1][0]
-    script_path_str = str(script_path.resolve())
-    pi, pn = page_icon_and_name(script_path)
-    psh = calc_md5(script_path_str)
-    pages[psh] = {
-        "page_script_hash": psh,
-        "page_name": pn,
-        "icon": pi,
-        "script_path": script_path_str,
-    }
-    _on_pages_changed.send()
+#     pages = get_pages(main_script_path_str)
+#     main_script_path = Path(main_script_path_str)
+#     pages_dir = main_script_path.parent / "pages"
+#     script_path = [f for f in pages_dir.glob("*.py") if f.name.find(page_name) != -1][0]
+#     script_path_str = str(script_path.resolve())
+#     pi, pn = page_icon_and_name(script_path)
+#     psh = calc_md5(script_path_str)
+#     pages[psh] = {
+#         "page_script_hash": psh,
+#         "page_name": pn,
+#         "icon": pi,
+#         "script_path": script_path_str,
+#     }
+#     _on_pages_changed.send()
 
-add_page("pages", "favorateApi")
+# add_page("pages", "favorateApi")
 
 
 # def delete_page(main_script_path_str, page_name):

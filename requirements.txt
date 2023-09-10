@@ -3,3 +3,4 @@ extra-streamlit-components==0.1.56
 folium
 streamlit-folium
 streamlit_js_eval
+firebase-admin

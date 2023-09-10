@@ -4,6 +4,77 @@ from hash import hash_password,verify_password,load_users,save_users,isEmail
 import datetime
 from sent_email import sent_otp
 import random
+from streamlit.source_util import (
+    page_icon_and_name, 
+    calc_md5, 
+    get_pages,
+    _on_pages_changed
+)
+from pathlib import Path
+
+from streamlit_js_eval import streamlit_js_eval
+
+screen_width = streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
+
+if "screen_width" not in st.session_state:
+    st.session_state["screen_width"] = screen_width
+
+
+# st.write(f"Screen width is {streamlit_js_eval(js_expressions='screen.width', key = 'SCR')}")
+# st.write(f"Screen height is {streamlit_js_eval(js_expressions='screen.height', key = 'SCR1')}")
+
+
+# # hide show pages https://discuss.streamlit.io/t/hide-show-pages-in-multipage-app-based-on-conditions/28642/6
+def add_page(main_script_path_str, page_name):
+    
+    pages = get_pages(main_script_path_str)
+    main_script_path = Path(main_script_path_str)
+    pages_dir = main_script_path.parent / "pages"
+    script_path = [f for f in pages_dir.glob("*.py") if f.name.find(page_name) != -1][0]
+    script_path_str = str(script_path.resolve())
+    pi, pn = page_icon_and_name(script_path)
+    psh = calc_md5(script_path_str)
+    pages[psh] = {
+        "page_script_hash": psh,
+        "page_name": pn,
+        "icon": pi,
+        "script_path": script_path_str,
+    }
+    _on_pages_changed.send()
+
+add_page("pages", "favorateApi")
+
+
+# def delete_page(main_script_path_str, page_name):
+
+#     current_pages = get_pages(main_script_path_str)
+#     st.write(current_pages)
+
+#     for key, value in current_pages.items():
+#         if value['page_name'] == page_name:
+#             del current_pages[key]
+#             break
+#         else:
+#             pass
+#     _on_pages_changed.send()
+# current_pages = get_pages('pages')
+# # st.write(current_pages)
+# # if st.button("delete"):
+# delete_page("pages", "favorateApi")
+
+
+
+# st.set_page_config(
+#     page_title="Ex-stream-ly Cool App",
+#     page_icon="🧊",
+#     layout="wide",
+#     initial_sidebar_state="expanded",
+#     menu_items={
+#         'Get Help': 'https://www.extremelycoolapp.com/help',
+#         'Report a bug': "https://www.extremelycoolapp.com/bug",
+#         'About': "# This is a header. This is an *extremely* cool app!"
+#     }
+# )
 
 
 # st.title("Login")

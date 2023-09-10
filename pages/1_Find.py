@@ -187,7 +187,8 @@ def create_map(df):
             row['province_eng'] = st.session_state["selected_province"]
 
             encoded_text = base64.b64encode(json.dumps(dict(row)).encode('utf-8'))
-            htm += f"<h4><a href=http://localhost:8505/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
+            #htm += f"<h4><a href=http://localhost:8505/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
+            htm += f"<h4><a href=https://led-webappgit-n6mlx9qfep6a8quj6qol94.streamlit.app/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
             
             popup=folium.Popup(htm, max_width=400)
             marker = folium.Circle(popup=popup,location=[float(row['lat']), float(row['lon'])], radius=100,weight=1, fill=True, color=color,fill_color=fill_color,fill_opacity=fill_opacity)

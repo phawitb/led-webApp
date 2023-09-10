@@ -13,8 +13,8 @@ import extra_streamlit_components as stx
 # import datetime
 import json
 
-import firebase_admin
-from firebase_admin import credentials, firestore
+#import firebase_admin
+#from firebase_admin import credentials, firestore
 import time
 import random
 import webbrowser

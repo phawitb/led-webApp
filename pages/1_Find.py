@@ -12,7 +12,7 @@ import base64
 import extra_streamlit_components as stx
 # import datetime
 import json
-
+import math
 # import firebase_admin
 # from firebase_admin import credentials, firestore
 # import time
@@ -187,8 +187,10 @@ def create_map(df):
             row['province_eng'] = st.session_state["selected_province"]
 
             encoded_text = base64.b64encode(json.dumps(dict(row)).encode('utf-8'))
-            #htm += f"<h4><a href=http://localhost:8505/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
+            # htm += f"<h4><a href=http://localhost:8505/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
             htm += f"<h4><a href=https://led-webappgit-n6mlx9qfep6a8quj6qol94.streamlit.app/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
+
+            # https://led-webappgit-n6mlx9qfep6a8quj6qol94.streamlit.app/
             
             popup=folium.Popup(htm, max_width=400)
             marker = folium.Circle(popup=popup,location=[float(row['lat']), float(row['lon'])], radius=100,weight=1, fill=True, color=color,fill_color=fill_color,fill_opacity=fill_opacity)
@@ -272,7 +274,24 @@ def filter_df(df,selected_province,selected_aumpher,selected_min,selected_max,se
     dfs = dfs[dfs['matchDate'] == True]
     return dfs
 
-def create_list(df):
+def decimal_to_dms(decimal_degrees):
+    degrees = int(decimal_degrees)
+    decimal_minutes = (decimal_degrees - degrees) * 60
+    minutes = int(decimal_minutes)
+    seconds = (decimal_minutes - minutes) * 60
+
+    return degrees, minutes, seconds
+
+def format_coordinates(latitude, longitude):
+    latitude_dms = decimal_to_dms(latitude)
+    longitude_dms = decimal_to_dms(longitude)
+    
+    latitude_str = f"{latitude_dms[0]}°{latitude_dms[1]}'{latitude_dms[2]:.1f}\"N"
+    longitude_str = f"{longitude_dms[0]}°{longitude_dms[1]}'{longitude_dms[2]:.1f}\"E"
+
+    return latitude_str + '+' + longitude_str
+
+def create_list(df,n_total):
     for index, row in df.iterrows():
     #     if index ==10:
     #         break
@@ -280,7 +299,7 @@ def create_list(df):
         COL = st.columns(3)
         # st.divider()
         with COL[0]:
-            st.subheader(f":green[{index+1}/{df.shape[0]}[{row['sell_order']}]{row['type']}]")
+            st.subheader(f":green[{index+1}/{n_total}[{row['sell_order']}]{row['type']}]")
             st.markdown(f"***{row['tumbon']},{row['aumper']},{row['province']}***")
 
             area = ''
@@ -303,12 +322,27 @@ def create_list(df):
 
         with COL[1]:
             # st.image("https://www.meridianhomes.net.au/wp-content/uploads/2018/01/Meridian-Homes_Double-Story_Cadence-2-1.jpg", caption=f'{i}Sunrise by the mountains',use_column_width='auto')
-            st.image(row['img0'], caption=f'{i}Sunrise by the mountains',use_column_width='auto')
+            # st.image(row['img0'], caption=f'{i}Sunrise by the mountains',use_column_width='auto')
+            st.image(row['img0'],use_column_width='auto')
         
-        with COL[2]:
             # if st.button(f'Map{index}'):
-            url = "https://www.google.com/maps/place/13%C2%B054'23.3%22N+101%C2%B010'17.6%22E/@13.9064682,101.1689661,17z"
-            st.markdown(f'[Visit OpenAI]({url})')
+            # url = "https://www.google.com/maps/place/13%C2%B054'23.3%22N+101%C2%B010'17.6%22E/@13.9064682,101.1689661,17z"
+
+            # if row['lat']:
+            if not math.isnan(row['lat']):
+                decimal_coordinates = (row['lat'], row['lon'])
+                print('decimal_coordinates',decimal_coordinates)
+                formatted_coordinates = format_coordinates(*decimal_coordinates)
+
+
+                url = f"https://www.google.com/maps/place/{formatted_coordinates}/@{row['lat']},{row['lon']},17z"
+                st.markdown(f'[Map]({url})')
+            else:
+                st.markdown(f'No map')
+
+        with COL[2]:
+            
+
             try:
                 st.image(row['img1'],use_column_width='auto')
             except:
@@ -392,11 +426,11 @@ if st.session_state["current_id"]:
         st.session_state["df"] = dfs
 
         #-------------------------------------------------------
-        if st.sidebar.button('Map'): #,use_container_width=True):
+        if st.sidebar.button('Map',use_container_width=True):
             st.session_state.sidebar_state = 'collapsed'
             st.session_state["stage"] = 'map'
             st.experimental_rerun()
-        if st.sidebar.button('Lists'): #,use_container_width=True):
+        if st.sidebar.button('Lists',use_container_width=True):
             st.session_state.sidebar_state = 'collapsed'
             st.session_state["stage"] = 'lists'
             st.experimental_rerun()
@@ -424,7 +458,7 @@ if st.session_state["current_id"]:
             for i in range(n_page):
                 with T[i]:
                     filtered_df = df.iloc[i*10:i*10+10]
-                    create_list(filtered_df)
+                    create_list(filtered_df,df.shape[0])
         else:
             st.write('Please select province in slidebar!')
 

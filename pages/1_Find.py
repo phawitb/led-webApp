@@ -674,7 +674,7 @@ if st.session_state["current_id"]:
             data = []
             for k in ['Map','No GPS']:
                 data.append(stx.TabBarItemData(id=k, title=k, description=""))
-            chosen_idM = stx.tab_bar(data = data,default='🌎 Map')
+            chosen_idM = stx.tab_bar(data = data,default='Map')
 
             map,no_gps = create_map(st.session_state["df"])
             if chosen_idM == 'Map':

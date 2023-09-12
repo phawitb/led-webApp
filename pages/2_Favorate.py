@@ -8,6 +8,7 @@ import pandas as pd
 import io
 import pygsheets
 import math
+import datetime
 
 gc = pygsheets.authorize(service_account_file='led-sheet-47e8afe294c8.json')
 spreadsheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/16dO1zkakREjZxbjB6XFGijHFjjOUDYNpjwoeuUW5gP8/edit?usp=sharing')
@@ -67,7 +68,7 @@ def update_sheet(user_id,province,link,sta):
         worksheet.update_value(f'C{last_row+1}', sta)
         worksheet.update_value(f'D{last_row+1}', link)
 
-def create_list(df,n_total,ii):
+def create_list(df,n_total,p):
  
     for index, row in df.iterrows():
     #     if index ==10:
@@ -114,14 +115,14 @@ def create_list(df,n_total,ii):
             except:
                 st.markdown(f":orange[นัด -]")
 
-            st.markdown(f":blue[{row['status']}]")
+            st.markdown(f":red[{row['status']}]")
 
             st.subheader(f"[:moneybag: :blue[{row['max_price']:,.0f}]]({row['link']})")
 
             
-            if st.button(f"Favorate{ii}{index}"):
-                st.write('Add favorate complete')
-                update_sheet(st.session_state["current_id"],st.session_state["selected_province"],row['link'],1)
+            if st.button(f"Delete Favorate",key=f"{p}{index}"):
+                st.write('delete favorate complete')
+                update_sheet(person_id,p,row['link'],0)
      
             
 
@@ -252,7 +253,7 @@ def get_data(province):
 cookie_manager = stx.CookieManager()
 person_id = cookie_manager.get(cookie='person_id')
 
-st.title(person_id)
+st.write(person_id)
 
 #init pygsheets
 gc = pygsheets.authorize(service_account_file='led-sheet-47e8afe294c8.json')
@@ -274,12 +275,25 @@ df_filter = df_favorate[condition1 & condition2]
 
 tabs_list = list(df_filter['province'].unique())
 
+data = []
+for k in tabs_list:
+    data.append(stx.TabBarItemData(id=k, title=k, description=""))
+chosen_idM = stx.tab_bar(data = data,default=tabs_list[0])
+
+
 if tabs_list:
 
-    tabs = st.tabs(tabs_list)
+
+
+
+
+
+
+    # tabs = st.tabs(tabs_list)
 
     for index,p in enumerate(tabs_list):
-        with tabs[index]:
+        # with tabs[index]:
+        if chosen_idM == p:
             df_favorate_province = df_filter[df_filter['province']==p]
             # st.write(df_favorate_province)
             # st.write(list(df_favorate_province['link']))
@@ -288,15 +302,27 @@ if tabs_list:
             # st.write(df_province)
 
             df = df_province[df_province['link'].isin(list(df_favorate_province['link']))]
+
+            df = df.reset_index()
             #list
             # df = st.session_state["df"]
             # st.write(df)
             n_page = df.shape[0]//10 + 1
-            T = st.tabs([str(i) for i in range(1, n_page+1)])
+
+            # T = st.tabs([str(i) for i in range(1, n_page+1)])
+
+            T = [str(i) for i in range(1, n_page+1)]
+
+            data = []
+            for k in T:
+                data.append(stx.TabBarItemData(id=k, title=k, description=""))
+            chosen_idMM = stx.tab_bar(data = data,default=T[0])
+
             for i in range(n_page):
-                with T[i]:
+                # with T[i]:
+                if chosen_idMM == T[i]:
                     filtered_df = df.iloc[i*10:i*10+10]
-                    create_list(filtered_df.reset_index(),filtered_df.shape[0],index)
+                    create_list(filtered_df,df.shape[0],p)
                     # create_list(filtered_df,tabs_list[index])
 
 

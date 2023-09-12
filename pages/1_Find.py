@@ -386,12 +386,11 @@ def create_list(df,n_total):
             except:
                 st.markdown(f":orange[นัด -]")
 
-            st.markdown(f":blue[{row['status']}]")
+            st.markdown(f":red[{row['status']}]")
 
             st.subheader(f"[:moneybag: :blue[{row['max_price']:,.0f}]]({row['link']})")
 
-            
-            if st.button(f"Add Favorate{index}"):
+            if st.button(f"Add Favorate",key=index):
                 st.write('Add favorate complete')
                 update_sheet(st.session_state["current_id"],st.session_state["selected_province"],row['link'],1)
      
@@ -564,9 +563,11 @@ if st.session_state["current_id"]:
                 chosen_id2 = stx.tab_bar(data = data2, default=1)
                 # placeholder2 = placeholder.container()
 
+                df = df.reset_index()
+
                 filtered_df2 = df.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
                 # st.write(filtered_df2)
-                create_list(filtered_df2.reset_index(),df.shape[0])
+                create_list(filtered_df2,df.shape[0])
 
             # elif chosen_id0 == 'lastSta_date':
             #     df[chosen_id0]
@@ -653,6 +654,8 @@ if st.session_state["current_id"]:
                 except:
                     df_filter = df[df[chosen_id0]==chosen_id]
 
+                df_filter = df_filter.reset_index()
+
                 n_page = df_filter.shape[0]//10 + 1
                 data2 = []
                 for i in range(1,n_page+1):
@@ -664,22 +667,26 @@ if st.session_state["current_id"]:
 
                 filtered_df2 = df_filter.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
                 # st.write(filtered_df2)
-                create_list(filtered_df2.reset_index(),df_filter.shape[0])
+                create_list(filtered_df2,df_filter.shape[0])
 
         else:
-            # st.write('map')
 
-            TM = st.tabs(['Map','No GPS'])
-            with TM[0]:
+            data = []
+            for k in ['Map','No GPS']:
+                data.append(stx.TabBarItemData(id=k, title=k, description=""))
+            chosen_idM = stx.tab_bar(data = data,default='🌎 Map')
 
-                map,no_gps = create_map(st.session_state["df"])
+            map,no_gps = create_map(st.session_state["df"])
+            if chosen_idM == 'Map':
+                # map,no_gps = create_map(st.session_state["df"])
                 map.get_root().html.add_child(folium.Element('<style>#map-container { height: 100vh !important; width: 100% !important; }</style>'))
                 # m = folium_static(map,height=1000, width=1800)
                 m = folium_static(map,height=1000, width=st.session_state["screen_width"])
-            
-            with TM[1]:
+
+            if chosen_idM == 'No GPS':
                 df = st.session_state["df"]
                 no_gps_df = df[df['link'].isin(no_gps)]
+                no_gps_df = no_gps_df.reset_index()
                 # st.write(no_gps_df)
 
                 # create_list(no_gps_df.reset_index(),no_gps_df.shape[0])
@@ -696,7 +703,42 @@ if st.session_state["current_id"]:
 
                 filtered_df2 = no_gps_df.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
                 # st.write(filtered_df2)
-                create_list(filtered_df2.reset_index(),no_gps_df.shape[0])
+                create_list(filtered_df2,no_gps_df.shape[0])
+
+
+
+
+            # st.write('map')
+
+            # TM = st.tabs(['Map','No GPS'])
+            # with TM[0]:
+
+            #     map,no_gps = create_map(st.session_state["df"])
+            #     map.get_root().html.add_child(folium.Element('<style>#map-container { height: 100vh !important; width: 100% !important; }</style>'))
+            #     # m = folium_static(map,height=1000, width=1800)
+            #     m = folium_static(map,height=1000, width=st.session_state["screen_width"])
+            
+            # with TM[1]:
+            #     df = st.session_state["df"]
+            #     no_gps_df = df[df['link'].isin(no_gps)]
+            #     no_gps_df = no_gps_df.reset_index()
+            #     # st.write(no_gps_df)
+
+            #     # create_list(no_gps_df.reset_index(),no_gps_df.shape[0])
+
+            #     n_page = no_gps_df.shape[0]//10 + 1
+            #     data2 = []
+            #     for i in range(1,n_page+1):
+            #         # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
+            #         data2.append(stx.TabBarItemData(id=i, title=i, description=""))
+
+            #     # data2.sort()
+            #     chosen_id2 = stx.tab_bar(data = data2, default=1)
+            #     # placeholder2 = placeholder.container()
+
+            #     filtered_df2 = no_gps_df.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
+            #     # st.write(filtered_df2)
+            #     create_list(filtered_df2,no_gps_df.shape[0])
 
 
 

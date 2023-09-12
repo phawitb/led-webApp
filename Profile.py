@@ -19,6 +19,12 @@ screen_width = streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
 if "screen_width" not in st.session_state:
     st.session_state["screen_width"] = screen_width
 
+try:    
+    st.set_page_config(layout="wide",initial_sidebar_state=st.session_state.sidebar_state)
+except:
+    pass
+
+
 
 # st.write(f"Screen width is {streamlit_js_eval(js_expressions='screen.width', key = 'SCR')}")
 # st.write(f"Screen height is {streamlit_js_eval(js_expressions='screen.height', key = 'SCR1')}")

@@ -14,16 +14,46 @@ gc = pygsheets.authorize(service_account_file='led-sheet-47e8afe294c8.json')
 spreadsheet = gc.open_by_url('https://docs.google.com/spreadsheets/d/16dO1zkakREjZxbjB6XFGijHFjjOUDYNpjwoeuUW5gP8/edit?usp=sharing')
 worksheet = spreadsheet.sheet1
 
-def update_sheet(user_id,province,link):
+# def update_sheet(user_id,province,link):
+#     df = worksheet.get_as_df()
+#     result = df.isin([user_id,province,link]).all(axis=1)
+#     if not result.any():
+#         cells = worksheet.get_all_values(include_tailing_empty_rows=None, include_tailing_empty=False, returnas='matrix')
+#         last_row = len(cells)
+#         # print(last_row)
+#         worksheet.update_value(f'A{last_row+1}', user_id)
+#         worksheet.update_value(f'B{last_row+1}', province)
+#         worksheet.update_value(f'C{last_row+1}', link)
+
+def update_sheet(user_id,province,link,sta):
     df = worksheet.get_as_df()
-    result = df.isin([user_id,province,link]).all(axis=1)
-    if not result.any():
+    # result = df.isin([user_id,province,link]).all(axis=1)
+    # print(df)
+    condition1 = df['user_id'] == user_id
+    condition2 = df['province'] == province
+    condition3 = df['link'] == link
+    df_f = df[condition1 & condition2 & condition3]
+    index = list(df_f.index)
+
+    if index:
+        print('data exist')
+        worksheet.update_value(f'A{index[0]+2}', user_id)
+        worksheet.update_value(f'B{index[0]+2}', province)
+        worksheet.update_value(f'C{index[0]+2}', sta)
+        worksheet.update_value(f'D{index[0]+2}', link)
+        
+    else:
+        print('data not exist')
+        cells = worksheet.get_all_values(include_tailing_empty_rows=None, include_tailing_empty=False, returnas='matrix')
+        last_row = len(cells)
+
         cells = worksheet.get_all_values(include_tailing_empty_rows=None, include_tailing_empty=False, returnas='matrix')
         last_row = len(cells)
         # print(last_row)
         worksheet.update_value(f'A{last_row+1}', user_id)
         worksheet.update_value(f'B{last_row+1}', province)
-        worksheet.update_value(f'C{last_row+1}', link)
+        worksheet.update_value(f'C{last_row+1}', sta)
+        worksheet.update_value(f'D{last_row+1}', link)
 
 # cookie_manager = stx.CookieManager()
 # person_id = cookie_manager.get(cookie='person_id')
@@ -43,7 +73,8 @@ try:
         # st.write(data['user_id'])
         # st.write(data['link'])
 
-        update_sheet(data['user_id'],data['province_eng'],data['link'])
+        update_sheet(data['user_id'],data['province_eng'],data['link'],1)
+        
 
         st.title('Complete add to favorate')
 

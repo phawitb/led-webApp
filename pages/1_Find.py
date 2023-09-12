@@ -187,8 +187,8 @@ def create_map(df):
             row['province_eng'] = st.session_state["selected_province"]
 
             encoded_text = base64.b64encode(json.dumps(dict(row)).encode('utf-8'))
-            # htm += f"<h4><a href=http://localhost:8505/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
-            htm += f"<h4><a href=https://led-webappgit-n6mlx9qfep6a8quj6qol94.streamlit.app/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
+            htm += f"<h4><a href=http://localhost:8501/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
+            # htm += f"<h4><a href=https://led-webappgit-n6mlx9qfep6a8quj6qol94.streamlit.app/favorateApi/?name={encoded_text} target='_blank'>F</a></h4>"
 
             # https://led-webappgit-n6mlx9qfep6a8quj6qol94.streamlit.app/
             
@@ -300,7 +300,20 @@ def create_list(df,n_total):
         # st.divider()
         with COL[0]:
             st.subheader(f":green[{index+1}/{n_total}[{row['sell_order']}]{row['type']}]")
-            st.markdown(f"***{row['tumbon']},{row['aumper']},{row['province']}***")
+
+            if not math.isnan(row['lat']):
+                decimal_coordinates = (row['lat'], row['lon'])
+                print('decimal_coordinates',decimal_coordinates)
+                formatted_coordinates = format_coordinates(*decimal_coordinates)
+                url = f"https://www.google.com/maps/place/{formatted_coordinates}/@{row['lat']},{row['lon']},17z"
+                st.markdown(f"*[{row['tumbon']},{row['aumper']},{row['province']}]({url})*")
+            else:
+                st.markdown(f"*{row['tumbon']},{row['aumper']},{row['province']}*")
+
+            # st.markdown(f'[Map]({url})')
+            
+            
+            
 
             area = ''
             a = ['ตร.ว.','งาน','ไร่']
@@ -309,8 +322,34 @@ def create_list(df,n_total):
                     if row[f'size{i}'] != 0:
                         area += f"{row[f'size{i}']} {a[i]} "
             area = area[:-1]
-            st.markdown(f"**{area}**")
-            # st.markdown("*Streamlit* is **really** ***cool***.")
+            st.markdown(f"**:triangular_ruler: {area}**")
+            st.markdown(f"วางเงิน {row['pay_down']:,.0f} บาท")
+            
+
+            # st.markdown(f"{row['max_price']:,.0f} {row['current_price']:,.0f}")
+            date_object = datetime.strptime(str(int(row['lastSta_date'])), "%Y%m%d")
+            formatted_date = date_object.strftime("%d/%m/%y")
+            st.markdown(f":orange[นัด {int(row['bid_time'])} {formatted_date} {row['lastSta_detail']}]")
+
+            st.markdown(f":blue[{row['status']}]")
+
+            st.subheader(f"[:moneybag: :blue[{row['max_price']:,.0f}]]({row['link']})")
+            
+
+            
+
+            
+            # st.subheader(':green[ที่ดินพร้อมสิ่งปลูกสร้าง]')
+            # st.markdown("*บางกรวย,นนทบุรี*")
+            # st.markdown("**2 ไร่ 1 งาน 2 ตร.ว.**")
+            # st.subheader(":blue[123,456]")
+            # st.markdown("****:red[นัด 1 ปลอดการจำนอง]****")
+            
+
+
+
+            
+            # st.markdown("*Streamlit* is **really** ****cool****.")
             # st.text('บางกรวย,นนทบุรี')
             # st.title('This is a title')
             # st.header('This is a header with a divider')
@@ -329,16 +368,16 @@ def create_list(df,n_total):
             # url = "https://www.google.com/maps/place/13%C2%B054'23.3%22N+101%C2%B010'17.6%22E/@13.9064682,101.1689661,17z"
 
             # if row['lat']:
-            if not math.isnan(row['lat']):
-                decimal_coordinates = (row['lat'], row['lon'])
-                print('decimal_coordinates',decimal_coordinates)
-                formatted_coordinates = format_coordinates(*decimal_coordinates)
+            # if not math.isnan(row['lat']):
+            #     decimal_coordinates = (row['lat'], row['lon'])
+            #     print('decimal_coordinates',decimal_coordinates)
+            #     formatted_coordinates = format_coordinates(*decimal_coordinates)
 
 
-                url = f"https://www.google.com/maps/place/{formatted_coordinates}/@{row['lat']},{row['lon']},17z"
-                st.markdown(f'[Map]({url})')
-            else:
-                st.markdown(f'No map')
+                # url = f"https://www.google.com/maps/place/{formatted_coordinates}/@{row['lat']},{row['lon']},17z"
+                # st.markdown(f'[Map]({url})')
+            # else:
+            #     st.markdown(f'No map')
 
         with COL[2]:
             
@@ -376,6 +415,22 @@ def create_list(df,n_total):
                 #     st_folium(m,use_container_width=True,height=300) # width=400,height=400)
                 # else:
                 #     print('no location',row['link'])
+
+def create_tabs_lists(df,key):
+    df_filter = df
+    tabs_list = list(df_filter[key].unique())
+    tabs = st.tabs(tabs_list)
+    for index,p in enumerate(tabs_list):
+        with tabs[index]:
+            df_favorate_province = df_filter[df_filter[key]==p]
+            # df_province = get_data(p)
+            # df = df_province[df_province['link'].isin(list(df_favorate_province['link']))]
+            n_page = df_favorate_province.shape[0]//10 + 1
+            T = st.tabs([str(i) for i in range(1, n_page+1)])
+            for i in range(n_page):
+                with T[i]:
+                    filtered_df = df_favorate_province.iloc[i*10:i*10+10]
+                    create_list(filtered_df,df_favorate_province.shape[0])
 
 #slide bar============================
 if st.session_state["current_id"]:
@@ -426,11 +481,11 @@ if st.session_state["current_id"]:
         st.session_state["df"] = dfs
 
         #-------------------------------------------------------
-        if st.sidebar.button('Map',use_container_width=True):
+        if st.sidebar.button('🌎 Map',use_container_width=True):
             st.session_state.sidebar_state = 'collapsed'
             st.session_state["stage"] = 'map'
             st.experimental_rerun()
-        if st.sidebar.button('Lists',use_container_width=True):
+        if st.sidebar.button('🏠 Lists',use_container_width=True):
             st.session_state.sidebar_state = 'collapsed'
             st.session_state["stage"] = 'lists'
             st.experimental_rerun()
@@ -451,14 +506,52 @@ if st.session_state["current_id"]:
             # st_folium(map,use_container_width=True,height=300)
 
         elif st.session_state["stage"] == 'lists':
-            # if st.button('Map'):
-            #     st.session_state["stage"] = 'lists'
-            n_page = df.shape[0]//10 + 1
-            T = st.tabs([str(i) for i in range(1, n_page+1)])
-            for i in range(n_page):
-                with T[i]:
-                    filtered_df = df.iloc[i*10:i*10+10]
-                    create_list(filtered_df,df.shape[0])
+
+            
+            if st.button('all'):
+                genre = st.radio(
+                "What's your favorite movie genre",
+                range(1,200),
+                horizontal=True,label_visibility='hidden')
+            else:
+                genre = st.radio(
+                "What's your favorite movie genre",
+                range(1,20),
+                horizontal=True,label_visibility='hidden')
+
+
+
+            
+
+            if st.button('aumper'):
+                create_tabs_lists(df,'aumper')
+            if st.button('status'):
+                create_tabs_lists(df,'lastSta_detail')
+                # df_filter = df
+                # tabs_list = list(df_filter['aumper'].unique())
+                # tabs = st.tabs(tabs_list)
+                # for index,p in enumerate(tabs_list):
+                #     with tabs[index]:
+                #         df_favorate_province = df_filter[df_filter['aumper']==p]
+                #         # df_province = get_data(p)
+                #         # df = df_province[df_province['link'].isin(list(df_favorate_province['link']))]
+                #         n_page = df_favorate_province.shape[0]//10 + 1
+                #         T = st.tabs([str(i) for i in range(1, n_page+1)])
+                #         for i in range(n_page):
+                #             with T[i]:
+                #                 filtered_df = df_favorate_province.iloc[i*10:i*10+10]
+                #                 create_list(filtered_df,df_favorate_province.shape[0])
+
+            else:
+                st.write(df)
+                # if st.button('Map'):
+                #     st.session_state["stage"] = 'lists'
+                n_page = df.shape[0]//10 + 1
+                T = st.tabs([str(i) for i in range(1, n_page+1)])
+                for i in range(n_page):
+                    with T[i]:
+                        filtered_df = df.iloc[i*10:i*10+10]
+                        create_list(filtered_df,df.shape[0])
         else:
             st.write('Please select province in slidebar!')
 

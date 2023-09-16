@@ -253,7 +253,7 @@ def get_data(province):
 cookie_manager = stx.CookieManager()
 person_id = cookie_manager.get(cookie='person_id')
 
-st.write(person_id)
+st.markdown(f'### {person_id}')
 
 #init pygsheets
 gc = pygsheets.authorize(service_account_file='led-sheet-47e8afe294c8.json')
@@ -275,13 +275,14 @@ df_filter = df_favorate[condition1 & condition2]
 
 tabs_list = list(df_filter['province'].unique())
 
-data = []
-for k in tabs_list:
-    data.append(stx.TabBarItemData(id=k, title=k, description=""))
-chosen_idM = stx.tab_bar(data = data,default=tabs_list[0])
+
 
 
 if tabs_list:
+    data = []
+    for k in tabs_list:
+        data.append(stx.TabBarItemData(id=k, title=k, description=""))
+    chosen_idM = stx.tab_bar(data = data,default=tabs_list[0])
 
 
 
@@ -325,7 +326,8 @@ if tabs_list:
                     create_list(filtered_df,df.shape[0],p)
                     # create_list(filtered_df,tabs_list[index])
 
-
+else:
+    st.markdown('#### No favorate property')
 
 # def update_sheet(user_id,link):
 #     df = worksheet.get_as_df()

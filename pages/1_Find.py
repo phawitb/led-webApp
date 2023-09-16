@@ -1,5 +1,16 @@
 import streamlit as st
 st.set_page_config(layout="wide",initial_sidebar_state='expanded')
+st.markdown("""
+        <style>
+               .block-container {
+                    padding-top: 0rem;
+                    padding-bottom: 0rem;
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                }
+        </style>
+        """, unsafe_allow_html=True)
+
 import folium
 from streamlit_folium import folium_static
 import pandas as pd
@@ -32,6 +43,10 @@ if "screen_width" not in st.session_state:
 # st.write(screen_width)
 if 'sidebar_state' not in st.session_state:
     st.session_state.sidebar_state = 'expanded'
+
+if 'button_type' not in st.session_state:
+    st.session_state.button_type = {}
+
 
 # st.set_page_config(layout="wide",initial_sidebar_state=st.session_state.sidebar_state)
 # st.markdown(
@@ -342,10 +357,10 @@ def create_list(df,n_total):
         # st.divider()
         with COL[0]:
             if check_favorate(st.session_state["current_id"],row['link']):
-                f = '❤️'
+                type = 'primary'
             else:
-                f = ''
-            st.subheader(f"{f}:green[{index+1}/{n_total}[{row['sell_order']}]{row['type']}]")
+                type = 'secondary'
+            st.subheader(f":green[{index+1}/{n_total}[{row['sell_order']}]{row['type']}]")
 
             if not math.isnan(row['lat']):
                 decimal_coordinates = (row['lat'], row['lon'])
@@ -390,10 +405,28 @@ def create_list(df,n_total):
 
             st.subheader(f"[:moneybag: :blue[{row['max_price']:,.0f}]]({row['link']})")
 
-            if st.button(f"Add Favorate",key=index):
-                st.write('Add favorate complete')
+
+
+
+            # if check_favorate(st.session_state["current_id"],row['link']):
+            #     st.session_state.button_type[index] = 'primary'
+            # else:
+            #     st.session_state.button_type[index] = 'secondary'
+            # b = st.button('☆', type=st.session_state.button_type[index],key=index)
+            # if b:
+            #     if st.session_state.button_type[index] == 'secondary':
+            #         st.session_state.button_type[index] = 'primary'
+            #         update_sheet(st.session_state["current_id"],st.session_state["selected_province"],row['link'],0)
+            #     else:
+            #         st.session_state.button_type[index] = 'secondary'
+            #         update_sheet(st.session_state["current_id"],st.session_state["selected_province"],row['link'],1)
+            #     st.experimental_rerun()
+
+            if st.button(f"⭐",key=index,type=type):
+                st.write(':red[Add favorate complete]')
                 update_sheet(st.session_state["current_id"],st.session_state["selected_province"],row['link'],1)
-     
+                # st.session_state.button_type[index] = 'primary'
+                # st.experimental_rerun()
             
 
             
@@ -420,30 +453,19 @@ def create_list(df,n_total):
             # hc.info_card(title='Some heading GOOD', content='All good!\n\ndvdvd sd sd sd xzcxynfgdsdcvsrfxgdc edzsbzd', sentiment='good',bar_value=77)
 
         with COL[1]:
-            # st.image("https://www.meridianhomes.net.au/wp-content/uploads/2018/01/Meridian-Homes_Double-Story_Cadence-2-1.jpg", caption=f'{i}Sunrise by the mountains',use_column_width='auto')
-            # st.image(row['img0'], caption=f'{i}Sunrise by the mountains',use_column_width='auto')
+            
             st.image(row['img0'],use_column_width='auto')
+            # img_link = row['img0']
+            # st.markdown(f"[![Foo]({img_link})]({img_link})")
         
-            # if st.button(f'Map{index}'):
-            # url = "https://www.google.com/maps/place/13%C2%B054'23.3%22N+101%C2%B010'17.6%22E/@13.9064682,101.1689661,17z"
-
-            # if row['lat']:
-            # if not math.isnan(row['lat']):
-            #     decimal_coordinates = (row['lat'], row['lon'])
-            #     print('decimal_coordinates',decimal_coordinates)
-            #     formatted_coordinates = format_coordinates(*decimal_coordinates)
-
-
-                # url = f"https://www.google.com/maps/place/{formatted_coordinates}/@{row['lat']},{row['lon']},17z"
-                # st.markdown(f'[Map]({url})')
-            # else:
-            #     st.markdown(f'No map')
+           
 
         with COL[2]:
             
-
             try:
                 st.image(row['img1'],use_column_width='auto')
+                # img_link = row['img1']
+                # st.markdown(f"[![Foo]({img_link})]({img_link})")
             except:
                 pass
                 # webbrowser.open_new_tab(url)
@@ -569,44 +591,7 @@ if st.session_state["current_id"]:
                 # st.write(filtered_df2)
                 create_list(filtered_df2,df.shape[0])
 
-            # elif chosen_id0 == 'lastSta_date':
-            #     df[chosen_id0]
-            #     L = list(df[chosen_id0].unique())
-
-            #     data = []
-            #     K = []
-            #     for l in L:
-            #         data.append(data.append(stx.TabBarItemData(id=l, title=l, description="")))
-            #         K.append(l)
-
-            #     chosen_id = stx.tab_bar(data = data,default=K[0])
-            #     placeholder = st.container()
-
-            #     df_filter = df[df[chosen_id0]==chosen_id]
-
-            #     #makelist page with 10
-            #     n_page = df_filter.shape[0]//10 + 1
-            #     data2 = []
-            #     for i in range(1,n_page+1):
-            #         # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
-            #         data2.append(stx.TabBarItemData(id=i, title=i, description=""))
-
-            #     chosen_id2 = stx.tab_bar(data = data2, default=1)
-            #     placeholder2 = placeholder.container()
-
-            #     filtered_df2 = df_filter.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
-            #     # st.write(filtered_df2)
-            #     create_list(filtered_df2.reset_index(),df_filter.shape[0])
-
-
-
             else:
-
-                # df = st.session_state["df"]
-                # st.write(df)
-
-                # df['aumper'].unique()
-
 
                 data = []
                 K = []
@@ -626,48 +611,105 @@ if st.session_state["current_id"]:
                         else:
                             title.append(t)
 
+                    print('list_a',list_a)
+                    for i,k in enumerate(list_a):
+                        try:
+                            k = '{:,}'.format(int(k))
+                        except:
+                            pass
+                        # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
+                        data.append(stx.TabBarItemData(id=k, title=title[i], description=""))
+                        K.append(k)
+                    print(K)
+                    chosen_id = stx.tab_bar(data = data,default=K[0])
+                    placeholder = st.container()
+
+                    data = []
+                    K = []
+                    # df['bid_time'] = df['bid_time'].astype(int)
+                    bid_times = list(df[df[chosen_id0]==float(chosen_id.replace(",", ""))]['bid_time'].unique())
+                    bid_times.sort()
+                    for i,k in enumerate(bid_times):
+                        try:
+                            data.append(stx.TabBarItemData(id=k, title=f'นัด {int(k)}', description=""))
+                        except:
+                            data.append(stx.TabBarItemData(id=k, title=f'นัด {k}', description=""))
+                        K.append(k)
+                    print(K)
+                    chosen_idb = stx.tab_bar(data = data,default=K[0])
+                    placeholderb = st.container()
+
+                    condition1 = df[chosen_id0]==float(chosen_id.replace(",", ""))
+                    condition2 = df['bid_time']==float(chosen_idb)
+                    # condition2 = True
+
+                    # st.write(chosen_id)
+                    # st.write(float(chosen_idb))
+                    df_filter = df[condition1 & condition2]
+
+                    # st.write(df_filter)
+
+                    df_filter = df_filter.reset_index()
+
+                    n_page = df_filter.shape[0]//10 + 1
+                    data2 = []
+                    for i in range(1,n_page+1):
+                        # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
+                        data2.append(stx.TabBarItemData(id=i, title=i, description=""))
+
+                    chosen_id2 = stx.tab_bar(data = data2, default=1)
+                    placeholder2 = placeholder.container()
+
+                    filtered_df2 = df_filter.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
+                    # st.write(filtered_df2)
+                    create_list(filtered_df2,df_filter.shape[0])
+
+
+
+
 
                 else:
                     title = list_a
                     
 
-                for i,k in enumerate(list_a):
+                    print('list_a',list_a)
+                    for i,k in enumerate(list_a):
+                        try:
+                            k = '{:,}'.format(int(k))
+                        except:
+                            pass
+                        # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
+                        data.append(stx.TabBarItemData(id=k, title=title[i], description=""))
+                        K.append(k)
+                        
+                    print(K)
+                    chosen_id = stx.tab_bar(data = data,default=K[0])
+                    placeholder = st.container()
+
+                    # st.write(df[chosen_id0])
+                    # st.write(df[chosen_id0].dtype)  
+                    # st.write(k)  
+                    # st.title(type(k))  
+
                     try:
-                        k = '{:,}'.format(int(k))
+                        df_filter = df[df[chosen_id0]==float(chosen_id.replace(",", ""))]
                     except:
-                        pass
-                    # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
-                    data.append(stx.TabBarItemData(id=k, title=title[i], description=""))
-                    K.append(k)
-                    
-                
-                chosen_id = stx.tab_bar(data = data,default=K[0])
-                placeholder = st.container()
+                        df_filter = df[df[chosen_id0]==chosen_id]
 
-                # st.write(df[chosen_id0])
-                # st.write(df[chosen_id0].dtype)  
-                # st.write(k)  
-                # st.title(type(k))  
+                    df_filter = df_filter.reset_index()
 
-                try:
-                    df_filter = df[df[chosen_id0]==float(chosen_id.replace(",", ""))]
-                except:
-                    df_filter = df[df[chosen_id0]==chosen_id]
+                    n_page = df_filter.shape[0]//10 + 1
+                    data2 = []
+                    for i in range(1,n_page+1):
+                        # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
+                        data2.append(stx.TabBarItemData(id=i, title=i, description=""))
 
-                df_filter = df_filter.reset_index()
+                    chosen_id2 = stx.tab_bar(data = data2, default=1)
+                    placeholder2 = placeholder.container()
 
-                n_page = df_filter.shape[0]//10 + 1
-                data2 = []
-                for i in range(1,n_page+1):
-                    # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
-                    data2.append(stx.TabBarItemData(id=i, title=i, description=""))
-
-                chosen_id2 = stx.tab_bar(data = data2, default=1)
-                placeholder2 = placeholder.container()
-
-                filtered_df2 = df_filter.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
-                # st.write(filtered_df2)
-                create_list(filtered_df2,df_filter.shape[0])
+                    filtered_df2 = df_filter.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
+                    # st.write(filtered_df2)
+                    create_list(filtered_df2,df_filter.shape[0])
 
         else:
 
@@ -707,7 +749,8 @@ if st.session_state["current_id"]:
 
 
 
-
+else:
+    st.markdown('### please login!')
             # st.write('map')
 
             # TM = st.tabs(['Map','No GPS'])

@@ -165,7 +165,7 @@ if not person_id:
 
                 save_users("users.json", users)
 
-                tab2.write('Done register',username)
+                tab2.write(f'Done register {username}')
 
             else:
                 tab2.text('OTP unmatch')
@@ -181,7 +181,7 @@ if not person_id:
 
     if st.session_state["stage_fg"] == 0:
         email = tab3.text_input("E-mail :")
-        if tab3.button('sent otp'):
+        if tab3.button('sent OTP'):
             
             if not isEmail(email):
                 tab3.text('not email format')

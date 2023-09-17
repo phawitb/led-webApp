@@ -295,7 +295,7 @@ def create_map(df):
 
             encoded_text = base64.b64encode(json.dumps(dict(row)).encode('utf-8'))
             # htm += f"<h4><a href=http://localhost:8501/favorateApi/?name={encoded_text} target='_blank'>⭐</a></h4>"
-            htm += f"<h4><a href=https://led-webapp-api.streamlit.app/favorateApi/?name={encoded_text} target='_blank'>⭐</a></h4>"
+            htm += f"<h4><a href=https://led-api.streamlit.app/?name={encoded_text} target='_blank'>⭐</a></h4>"
 
             # https://led-webappgit-n6mlx9qfep6a8quj6qol94.streamlit.app/
 

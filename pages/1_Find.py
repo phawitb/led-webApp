@@ -161,9 +161,11 @@ def filter_equal(df,col,L):
     return df2
 
 def filter_range(df,col,mi,mx):
-    df['max_price'].fillna(-1, inplace = True)
-    df2 = df[df[col]>mi]
-    df2 = df2[df2[col]<mx]
+    df['max_price'].fillna(0, inplace = True)
+    df2 = df[df[col]>=mi]
+
+    if mx != 500000000:
+        df2 = df2[df2[col]<=mx]
     return df2
 
 def filter_df(df,selected_province,selected_aumpher,selected_min,selected_max,selected_date,types,size_min, size_max):
@@ -569,10 +571,13 @@ if st.session_state["current_id"]:
 
         if chosen_id00 == '🏠 List':
             data = []
-            title = ['Sell-Order','ประเภท','อำเภอ','วางเงิน','วันที่']
-            for i,k in enumerate(['Sell-Order','type','aumper','pay_down','lastSta_date']):
+            title = ['Sell-Order','Sort-Price','ประเภท','อำเภอ','วางเงิน','วันที่']
+            for i,k in enumerate(['Sell-Order','Sort-Price','type','aumper','pay_down','lastSta_date']):
                 data.append(stx.TabBarItemData(id=k, title=title[i], description=""))
             chosen_id0 = stx.tab_bar(data = data,default='Sell-Order')
+
+            df['max_price'] = df['max_price'].fillna(0)
+            df['img0'] = df['img0'].fillna('https://icon-library.com/images/no-photo-available-icon/no-photo-available-icon-8.jpg')
 
             if chosen_id0 == 'Sell-Order':
                 n_page = df.shape[0]//10 + 1
@@ -585,6 +590,24 @@ if st.session_state["current_id"]:
                 chosen_id2 = stx.tab_bar(data = data2, default=1)
                 # placeholder2 = placeholder.container()
 
+                df = df.reset_index()
+
+                filtered_df2 = df.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
+                # st.write(filtered_df2)
+                create_list(filtered_df2,df.shape[0])
+
+            elif chosen_id0 == 'Sort-Price':
+                n_page = df.shape[0]//10 + 1
+                data2 = []
+                for i in range(1,n_page+1):
+                    # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
+                    data2.append(stx.TabBarItemData(id=i, title=i, description=""))
+
+                # data2.sort()
+                chosen_id2 = stx.tab_bar(data = data2, default=1)
+                # placeholder2 = placeholder.container()
+
+                df = df.sort_values(by='max_price')
                 df = df.reset_index()
 
                 filtered_df2 = df.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]

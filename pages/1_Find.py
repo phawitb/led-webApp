@@ -31,9 +31,17 @@ import math
 # import random
 # import webbrowser
 import numpy as np
+import random
 
 import pygsheets
 from streamlit_js_eval import streamlit_js_eval
+
+def all_province():
+    url = f'https://raw.githubusercontent.com/phawitb/crawler-led3-window/main/currentstage.csv'
+    response = requests.get(url)
+    df = pd.read_csv(io.StringIO(response.text))
+    return list(df['province'].unique())
+
 
 screen_width = streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
 
@@ -78,6 +86,8 @@ if "selected_province" not in st.session_state:
 if "fav_df" not in st.session_state:
     fav_df = df = worksheet.get_as_df()
     st.session_state["fav_df"] = fav_df
+if "all_province" not in st.session_state:
+    st.session_state["all_province"] = all_province()
 
 
 cookie_manager = stx.CookieManager()
@@ -91,8 +101,11 @@ COLORS = {
     'ที่ดินพร้อมสิ่งปลูกสร้าง' : 'red',
     'ที่ดินว่างเปล่า' : 'green',
     'ห้องชุด' : 'blue',
-    'หุ้น' : 'gray'
+    'หุ้น' : 'gray',
+    'สิ่งปลูกสร้าง' : 'black'
 }
+
+# PROVINCE = all_province()
 
 # def update_sheet(user_id,province,link):
 #     df = worksheet.get_as_df()
@@ -104,6 +117,9 @@ COLORS = {
 #         worksheet.update_value(f'A{last_row+1}', user_id)
 #         worksheet.update_value(f'B{last_row+1}', province)
 #         worksheet.update_value(f'C{last_row+1}', link)
+
+
+
 def check_favorate(user_id,link):
     condition1 = st.session_state["fav_df"]['user_id'] == user_id
     condition2 = st.session_state["fav_df"]['link'] == link
@@ -198,7 +214,9 @@ def filter_df(df,selected_province,selected_aumpher,selected_min,selected_max,se
     if selected_date != 'All Date':
         matchDate = []
         for index, row in dfs.iterrows():
-            if selected_date in eval(row['bid_dates']):
+            print(selected_date,type(selected_date))
+            print(row['bid_dates'],type(row['bid_dates']))
+            if str(row['bid_dates']) != 'nan' and selected_date in eval(row['bid_dates']):
                 matchDate.append(True)
             else:
                 matchDate.append(False)
@@ -455,8 +473,10 @@ def create_list(df,n_total):
             # hc.info_card(title='Some heading GOOD', content='All good!\n\ndvdvd sd sd sd xzcxynfgdsdcvsrfxgdc edzsbzd', sentiment='good',bar_value=77)
 
         with COL[1]:
-            
-            st.image(row['img0'],use_column_width='auto')
+            try:
+                st.image(row['img0'],use_column_width='auto')
+            except:
+                pass
             # img_link = row['img0']
             # st.markdown(f"[![Foo]({img_link})]({img_link})")
         
@@ -464,6 +484,7 @@ def create_list(df,n_total):
 
         with COL[2]:
             
+            #img map
             try:
                 st.image(row['img1'],use_column_width='auto')
                 # img_link = row['img1']
@@ -472,38 +493,37 @@ def create_list(df,n_total):
                 pass
                 # webbrowser.open_new_tab(url)
 
-            # st.button('Open link', on_click=open_page("https://www.google.com/maps/place/13%C2%B054'23.3%22N+101%C2%B010'17.6%22E/@13.9064682,101.1689661,17z"))
-            # if st.button(f'show map{index}'):
+           
                 
 
-                # print("row['lat']",row['lat'],type(row['lat']))
-                # # if row['lat'] and row['lon']:
-                # if not pd.isna(row['lat']):
-                #     random_integer = random.randint(1, 100)
-                #     m = folium.Map(location=[row['lat']+random_integer*0.000000001, row['lon']], zoom_start=16)
-                #     folium.Marker([row['lat'], row['lon']]).add_to(m)
+            # #map folium
+            # if not pd.isna(row['lat']):
+            #     random_integer = random.randint(1, 100)
+            #     m = folium.Map(location=[row['lat']+random_integer*0.000000001, row['lon']], zoom_start=16)
+            #     folium.Marker([row['lat'], row['lon']]).add_to(m)
 
-                #     plugins.Fullscreen(                                                         
-                #         position = "topleft",                                   
-                #         title = "Open full-screen map",                       
-                #         title_cancel = "Close full-screen map",                      
-                #         force_separate_button = True,                                         
-                #     ).add_to(m) 
+            #     plugins.Fullscreen(                                                         
+            #         position = "topleft",                                   
+            #         title = "Open full-screen map",                       
+            #         title_cancel = "Close full-screen map",                      
+            #         force_separate_button = True,                                         
+            #     ).add_to(m) 
 
-                #     satellite_tiles = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                #     folium.TileLayer(tiles=satellite_tiles, attr="Esri World Imagery", name="Satellite").add_to(m)
-                #     # folium.TileLayer(tiles='Stamen Terrain',name="Satellite2").add_to(map)
-                #     folium.LayerControl(position='topleft').add_to(m)
+            #     satellite_tiles = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            #     folium.TileLayer(tiles=satellite_tiles, attr="Esri World Imagery", name="Satellite").add_to(m)
+            #     # folium.TileLayer(tiles='Stamen Terrain',name="Satellite2").add_to(map)
+            #     folium.LayerControl(position='topleft').add_to(m)
 
 
-                #     st_folium(m,use_container_width=True,height=300) # width=400,height=400)
-                # else:
-                #     print('no location',row['link'])
+            #     st_folium(m,use_container_width=True,height=300) # width=400,height=400)
+            # else:
+            #     print('no location',row['link'])
 
 if st.session_state["current_id"]:
 
     st.sidebar.header("Find")
-    selected_province = st.sidebar.selectbox('Province',['Select Province','nonthaburi', 'nakhonpathom','samutsakorn','songkhla','chonburi'])
+    # selected_province = st.sidebar.selectbox('Province',['Select Province','nonthaburi', 'nakhonpathom','samutsakorn','songkhla','chonburi'])
+    selected_province = st.sidebar.selectbox('Province',['Select Province'] + st.session_state["all_province"])
     if selected_province != 'Select Province':
         st.session_state["selected_province"] = selected_province
 
@@ -577,7 +597,7 @@ if st.session_state["current_id"]:
             chosen_id0 = stx.tab_bar(data = data,default='Sell-Order')
 
             df['max_price'] = df['max_price'].fillna(0)
-            df['img0'] = df['img0'].fillna('https://icon-library.com/images/no-photo-available-icon/no-photo-available-icon-8.jpg')
+            # df['img0'] = df['img0'].fillna('https://icon-library.com/images/no-photo-available-icon/no-photo-available-icon-8.jpg')
 
             if chosen_id0 == 'Sell-Order':
                 n_page = df.shape[0]//10 + 1

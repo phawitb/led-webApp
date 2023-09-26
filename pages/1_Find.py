@@ -249,8 +249,13 @@ def create_map(df):
     no_gps = []
     for index, row in df.iterrows():
 
-        color = COLORS[row['type']]
-        fill_color = COLORS[row['type']]
+        if row['type'] in COLORS.keys():
+            color = COLORS[row['type']]
+            fill_color = COLORS[row['type']]
+        else:
+            color = 'black'
+            fill_color = 'white'
+        
         if row['size0'] < 30 and row['size1'] == 0 and row['size2'] == 0 and row['type']=='ที่ดินพร้อมสิ่งปลูกสร้าง':
             color = 'orange'
             fill_color = 'orange'

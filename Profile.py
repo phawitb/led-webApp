@@ -14,6 +14,24 @@ from pathlib import Path
 
 from streamlit_js_eval import streamlit_js_eval
 
+from st_pages import Page, show_pages, add_page_title
+
+# Optional -- adds the title and icon to the current page
+add_page_title()
+show_pages(
+    [
+        Page("Profile.py", "Profile", "🏠"),
+        Page("pages/1_Find.py", "Find", ":books:"),
+        Page("pages/2_Favorate.py", "Favorate", ":star:"),
+        Page("pages/3_About.py", "About", ":star:"),
+
+
+        
+    ]
+)
+
+
+
 screen_width = streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
 
 if "screen_width" not in st.session_state:

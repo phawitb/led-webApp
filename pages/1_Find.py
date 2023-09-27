@@ -2,8 +2,11 @@ import streamlit as st
 st.set_page_config(layout="wide",initial_sidebar_state='expanded')
 st.markdown("""
         <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
+            .css-1jc7ptx, .e1ewe7hr3, .viewerBadge_container__1QSob,
+            .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
+            .viewerBadge_text__1JaDK {
+                display: none;
+            }
             .block-container {
                 padding-top: 0rem;
                 padding-bottom: 0rem;
@@ -12,6 +15,7 @@ st.markdown("""
             }
         </style>
         """, unsafe_allow_html=True)
+
 import folium
 from streamlit_folium import folium_static
 import pandas as pd

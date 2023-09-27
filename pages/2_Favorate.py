@@ -355,31 +355,31 @@ if tabs_list:
                     data.append(stx.TabBarItemData(id=k, title=title, description=""))
                 chosen_idM2 = stx.tab_bar(data = data,default=tabs_list2[0])
 
-            for index,p in enumerate(tabs_list2):
-                if chosen_idM2 == p:
-                    df3 = df2[df2['lastSta_date']==p]
+                for index,p in enumerate(tabs_list2):
+                    if chosen_idM2 == p:
+                        df3 = df2[df2['lastSta_date']==p]
 
-                    df = df3.reset_index()
-                    #list
-                    # df = st.session_state["df"]
-                    # st.write(df)
-                    n_page = df.shape[0]//10 + 1
+                        df = df3.reset_index()
+                        #list
+                        # df = st.session_state["df"]
+                        # st.write(df)
+                        n_page = df.shape[0]//10 + 1
 
-                    # T = st.tabs([str(i) for i in range(1, n_page+1)])
+                        # T = st.tabs([str(i) for i in range(1, n_page+1)])
 
-                    T = [str(i) for i in range(1, n_page+1)]
+                        T = [str(i) for i in range(1, n_page+1)]
 
-                    data = []
-                    for k in T:
-                        data.append(stx.TabBarItemData(id=k, title=k, description=""))
-                    chosen_idMM = stx.tab_bar(data = data,default=T[0])
+                        data = []
+                        for k in T:
+                            data.append(stx.TabBarItemData(id=k, title=k, description=""))
+                        chosen_idMM = stx.tab_bar(data = data,default=T[0])
 
-                    for i in range(n_page):
-                        # with T[i]:
-                        if chosen_idMM == T[i]:
-                            filtered_df = df.iloc[i*10:i*10+10]
-                            create_list(filtered_df,df.shape[0],p)
-                            # create_list(filtered_df,tabs_list[index])
+                        for i in range(n_page):
+                            # with T[i]:
+                            if chosen_idMM == T[i]:
+                                filtered_df = df.iloc[i*10:i*10+10]
+                                create_list(filtered_df,df.shape[0],p)
+                                # create_list(filtered_df,tabs_list[index])
 
 else:
     st.markdown('#### No favorate property')

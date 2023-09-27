@@ -1,4 +1,11 @@
 import streamlit as st
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 import extra_streamlit_components as stx
 from hash import hash_password,verify_password,load_users,save_users,isEmail
 import datetime
@@ -7,13 +14,7 @@ import random
 from streamlit_js_eval import streamlit_js_eval
 from st_pages import Page, show_pages, add_page_title
 
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
 
 add_page_title()
 show_pages(

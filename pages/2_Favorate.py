@@ -68,6 +68,37 @@ def update_sheet(user_id,province,link,sta):
         worksheet.update_value(f'C{last_row+1}', sta)
         worksheet.update_value(f'D{last_row+1}', link)
 
+def delete_allfavorate(user_id,province,sta):
+    df = worksheet.get_as_df()
+    # result = df.isin([user_id,province,link]).all(axis=1)
+    # print(df)
+    condition1 = df['user_id'] == user_id
+    condition2 = df['province'] == province
+    # condition3 = df['link'] == link
+    df_f = df[condition1 & condition2]
+    index = list(df_f.index)
+
+    # if index:
+    for i in index:
+        print('data exist')
+        worksheet.update_value(f'A{i+2}', user_id)
+        worksheet.update_value(f'B{i+2}', province)
+        worksheet.update_value(f'C{i+2}', sta)
+        # worksheet.update_value(f'D{i+2}', link)
+        
+    # else:
+    #     print('data not exist')
+    #     cells = worksheet.get_all_values(include_tailing_empty_rows=None, include_tailing_empty=False, returnas='matrix')
+    #     last_row = len(cells)
+
+    #     cells = worksheet.get_all_values(include_tailing_empty_rows=None, include_tailing_empty=False, returnas='matrix')
+    #     last_row = len(cells)
+    #     # print(last_row)
+    #     worksheet.update_value(f'A{last_row+1}', user_id)
+    #     worksheet.update_value(f'B{last_row+1}', province)
+    #     worksheet.update_value(f'C{last_row+1}', sta)
+    #     worksheet.update_value(f'D{last_row+1}', link)
+
 def create_list(df,n_total,p):
  
     for index, row in df.iterrows():
@@ -284,8 +315,10 @@ if tabs_list:
         data.append(stx.TabBarItemData(id=k, title=k, description=""))
     chosen_idM = stx.tab_bar(data = data,default=tabs_list[0])
 
+    if st.button('Delete All Favorate'):
+        delete_allfavorate(person_id,chosen_idM,0)
 
-
+  
 
 
 
@@ -302,29 +335,51 @@ if tabs_list:
             df_province = get_data(p)
             # st.write(df_province)
 
-            df = df_province[df_province['link'].isin(list(df_favorate_province['link']))]
+            df2 = df_province[df_province['link'].isin(list(df_favorate_province['link']))]
 
-            df = df.reset_index()
-            #list
-            # df = st.session_state["df"]
-            # st.write(df)
-            n_page = df.shape[0]//10 + 1
+            # st.write(df2)
 
-            # T = st.tabs([str(i) for i in range(1, n_page+1)])
+            df2['lastSta_date'] = df2['lastSta_date'].astype(str)
+            tabs_list2 = list(df2['lastSta_date'].unique())
+            tabs_list2.sort()
+            # st.write(tabs_list2)
+            if tabs_list2:
+                data = []
+                for k in tabs_list2:
+                    try:
+                        k = str(int(float(k)))
+                        input_date = datetime.datetime.strptime(k, "%Y%m%d")
+                        title = input_date.strftime("%d-%m-%Y")
+                    except:
+                        title = k
+                    data.append(stx.TabBarItemData(id=k, title=title, description=""))
+                chosen_idM2 = stx.tab_bar(data = data,default=tabs_list2[0])
 
-            T = [str(i) for i in range(1, n_page+1)]
+            for index,p in enumerate(tabs_list2):
+                if chosen_idM2 == p:
+                    df3 = df2[df2['lastSta_date']==p]
 
-            data = []
-            for k in T:
-                data.append(stx.TabBarItemData(id=k, title=k, description=""))
-            chosen_idMM = stx.tab_bar(data = data,default=T[0])
+                    df = df3.reset_index()
+                    #list
+                    # df = st.session_state["df"]
+                    # st.write(df)
+                    n_page = df.shape[0]//10 + 1
 
-            for i in range(n_page):
-                # with T[i]:
-                if chosen_idMM == T[i]:
-                    filtered_df = df.iloc[i*10:i*10+10]
-                    create_list(filtered_df,df.shape[0],p)
-                    # create_list(filtered_df,tabs_list[index])
+                    # T = st.tabs([str(i) for i in range(1, n_page+1)])
+
+                    T = [str(i) for i in range(1, n_page+1)]
+
+                    data = []
+                    for k in T:
+                        data.append(stx.TabBarItemData(id=k, title=k, description=""))
+                    chosen_idMM = stx.tab_bar(data = data,default=T[0])
+
+                    for i in range(n_page):
+                        # with T[i]:
+                        if chosen_idMM == T[i]:
+                            filtered_df = df.iloc[i*10:i*10+10]
+                            create_list(filtered_df,df.shape[0],p)
+                            # create_list(filtered_df,tabs_list[index])
 
 else:
     st.markdown('#### No favorate property')

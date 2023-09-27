@@ -327,10 +327,12 @@ def create_map(df):
             row['province_eng'] = st.session_state["selected_province"]
 
             encoded_text = base64.b64encode(json.dumps(dict(row)).encode('utf-8'))
-            # htm += f"<h4><a href=http://localhost:8501/favorateApi/?name={encoded_text} target='_blank'>⭐</a></h4>"
-            # htm += f"<h4><a href=http://led-api.streamlit.app/main/?name={encoded_text} target='_blank'>⭐</a></h4>"
+            htm += f"<h4><a href=http://localhost:8503/-/?name={encoded_text} target='_blank'>⭐</a></h4>"
+            # htm += f"<h4><a href=https://led-api.streamlit.app/?name={encoded_text} target='_blank'>⭐</a></h4>"
 
-            htm += f"<h4><a href=https://ledproperty.streamlit.app/favorateApi/?name={encoded_text} target='_blank'>⭐</a></h4>"
+            # https://led-api.streamlit.app/?name=
+
+            # htm += f"<h4><a href=https://ledproperty.streamlit.app/favorateApi/?name={encoded_text} target='_blank'>⭐</a></h4>"
 
             
                               
@@ -603,21 +605,30 @@ if st.session_state["current_id"]:
         # df['lastSta_date'] = df['lastSta_date'].fillna("-", inplace=True)
 
         data = []
-        for k in ['🏠 List','🌎 Map']:
+        for k in ['🏠 Sell-order','min↑','max↓','🌎 Map']:
             data.append(stx.TabBarItemData(id=k, title=k, description=""))
-        chosen_id00 = stx.tab_bar(data = data,default='🏠 List')
+        chosen_id00 = stx.tab_bar(data = data,default='🏠 Sell-order')
 
-        if chosen_id00 == '🏠 List':
+        if chosen_id00 == 'min↑':
+            df = df.sort_values(by='max_price')
+            df = df.reset_index()
+        elif chosen_id00 == 'max↓':
+            df = df.sort_values(by='max_price',ascending=False)
+            df = df.reset_index()
+
+        # if chosen_id00 == '🏠 Sell-order' or chosen_id00 == 'min↑↓':
+        if chosen_id00 in ['🏠 Sell-order','min↑','max↓']:
             data = []
-            title = ['Sell-Order','Sort-Price','ประเภท','อำเภอ','วางเงิน','วันที่']
-            for i,k in enumerate(['Sell-Order','Sort-Price','type','aumper','pay_down','lastSta_date']):
+            title = ['All','ประเภท','อำเภอ','วางเงิน','วันที่']
+            for i,k in enumerate(['All','type','aumper','pay_down','lastSta_date']):
                 data.append(stx.TabBarItemData(id=k, title=title[i], description=""))
-            chosen_id0 = stx.tab_bar(data = data,default='Sell-Order')
+            chosen_id0 = stx.tab_bar(data = data,default='All')
 
             df['max_price'] = df['max_price'].fillna(0)
             # df['img0'] = df['img0'].fillna('https://icon-library.com/images/no-photo-available-icon/no-photo-available-icon-8.jpg')
 
-            if chosen_id0 == 'Sell-Order':
+
+            if chosen_id0 == 'All':
                 n_page = df.shape[0]//10 + 1
                 data2 = []
                 for i in range(1,n_page+1):
@@ -634,23 +645,23 @@ if st.session_state["current_id"]:
                 # st.write(filtered_df2)
                 create_list(filtered_df2,df.shape[0])
 
-            elif chosen_id0 == 'Sort-Price':
-                n_page = df.shape[0]//10 + 1
-                data2 = []
-                for i in range(1,n_page+1):
-                    # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
-                    data2.append(stx.TabBarItemData(id=i, title=i, description=""))
+            # elif chosen_id0 == 'Sort-Price':
+            #     n_page = df.shape[0]//10 + 1
+            #     data2 = []
+            #     for i in range(1,n_page+1):
+            #         # data.append(stx.TabBarItemData(id=i, title="✍️ To Do", description="Tasks to take care of"))
+            #         data2.append(stx.TabBarItemData(id=i, title=i, description=""))
 
-                # data2.sort()
-                chosen_id2 = stx.tab_bar(data = data2, default=1)
-                # placeholder2 = placeholder.container()
+            #     # data2.sort()
+            #     chosen_id2 = stx.tab_bar(data = data2, default=1)
+            #     # placeholder2 = placeholder.container()
 
-                df = df.sort_values(by='max_price')
-                df = df.reset_index()
+            #     df = df.sort_values(by='max_price')
+            #     df = df.reset_index()
 
-                filtered_df2 = df.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
-                # st.write(filtered_df2)
-                create_list(filtered_df2,df.shape[0])
+            #     filtered_df2 = df.iloc[(int(chosen_id2)-1)*10:(int(chosen_id2)-1)*10+10]
+            #     # st.write(filtered_df2)
+            #     create_list(filtered_df2,df.shape[0])
 
             else:
 

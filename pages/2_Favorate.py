@@ -339,6 +339,7 @@ if tabs_list:
 
             # st.write(df2)
 
+            df2['lastSta_date'] = df2['lastSta_date'].astype(int)
             df2['lastSta_date'] = df2['lastSta_date'].astype(str)
             tabs_list2 = list(df2['lastSta_date'].unique())
             tabs_list2.sort()

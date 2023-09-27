@@ -123,7 +123,8 @@ COLORS = {
 def check_favorate(user_id,link):
     condition1 = st.session_state["fav_df"]['user_id'] == user_id
     condition2 = st.session_state["fav_df"]['link'] == link
-    df_f = st.session_state["fav_df"][condition1 & condition2]
+    condition3 = st.session_state["fav_df"]['sta'] == 1
+    df_f = st.session_state["fav_df"][condition1 & condition2 & condition3]
 
     if df_f.shape[0] != 0:
         return True
@@ -549,6 +550,8 @@ if st.session_state["current_id"]:
     selected_province = st.sidebar.selectbox('Province',['Select Province'] + st.session_state["all_province"])
     if selected_province != 'Select Province':
         st.session_state["selected_province"] = selected_province
+
+        # st.write(st.session_state["fav_df"])
 
         # tab1,tab2,tab3 = st.tabs(["📈 Lists", "🗃 Map","🌟Favorate"])
         # tab1,tab2 = st.tabs(["📈 Lists", "🗃 Map"])

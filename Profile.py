@@ -20,10 +20,15 @@ from st_pages import Page, show_pages, add_page_title
 add_page_title()
 show_pages(
     [
-        Page("Profile.py", "Profile", "🏠"),
-        Page("pages/1_Find.py", "Find", ":books:"),
+        Page("Profile.py", "Profile", "👤"),
+        Page("pages/1_Find.py", "Find", "🏠"),
         Page("pages/2_Favorate.py", "Favorate", ":star:"),
-        Page("pages/3_About.py", "About", ":star:"),
+        Page("pages/3_About.py", "About", ":books:"),
+        Page("pages/favorateApi.py", "-",""),
+
+
+
+        
 
 
         

@@ -1,4 +1,16 @@
 import streamlit as st
+st.markdown(
+    """
+    <style>
+    .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
+    .viewerBadge_text__1JaDK {
+        display: none;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 import extra_streamlit_components as stx
 from hash import hash_password,verify_password,load_users,save_users,isEmail
 import datetime
@@ -7,18 +19,16 @@ import random
 from streamlit_js_eval import streamlit_js_eval
 from st_pages import Page, show_pages, add_page_title
 
-# st.markdown(
-#     """
-#     <style>
-#     .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
-#     .viewerBadge_text__1JaDK {
-#         display: none;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
 
+
+
+# hide_streamlit_style = """
+#             <style>
+#             #MainMenu {visibility: hidden;}
+#             footer {visibility: hidden;}
+#             </style>
+#             """
+# st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 
 add_page_title()
@@ -32,6 +42,8 @@ show_pages(
     ]
 )
 
+
+
 screen_width = streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
 
 if "screen_width" not in st.session_state:
@@ -44,14 +56,6 @@ except:
 
 cookie_manager = stx.CookieManager()
 person_id = cookie_manager.get(cookie='person_id')
-
-# hide_streamlit_style = """
-#             <style>
-#             #MainMenu {visibility: hidden;}
-#             footer {visibility: hidden;}
-#             </style>
-#             """
-# st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 if not person_id:
     LIST_MENUS = ["📈 Login", "🗃 Register","Forgot Password"]

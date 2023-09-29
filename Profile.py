@@ -5,30 +5,30 @@ import datetime
 from sent_email import sent_otp
 import random
 from streamlit_js_eval import streamlit_js_eval
-from st_pages import Page, show_pages, add_page_title
+# from st_pages import Page, show_pages, add_page_title
 
-st.markdown(
-    """
-    <style>
-    .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
-    .viewerBadge_text__1JaDK {
-        display: none;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+# st.markdown(
+#     """
+#     <style>
+#     .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
+#     .viewerBadge_text__1JaDK {
+#         display: none;
+#     }
+#     </style>
+#     """,
+#     unsafe_allow_html=True
+# )
 
-add_page_title()
-show_pages(
-    [
-        Page("Profile.py", "Profile", "👤"),
-        Page("pages/1_Find.py", "Find", "🏠"),
-        Page("pages/2_Favorate.py", "Favorate", ":star:"),
-        Page("pages/3_About.py", "About", ":books:"),
-        Page("pages/favorateApi.py", "-",""),
-    ]
-)
+# add_page_title()
+# show_pages(
+#     [
+#         Page("Profile.py", "Profile", "👤"),
+#         Page("pages/1_Find.py", "Find", "🏠"),
+#         Page("pages/2_Favorate.py", "Favorate", ":star:"),
+#         Page("pages/3_About.py", "About", ":books:"),
+#         Page("pages/favorateApi.py", "-",""),
+#     ]
+# )
 
 screen_width = streamlit_js_eval(js_expressions='screen.width', key = 'SCR')
 

@@ -19,13 +19,7 @@ from st_pages import Page, show_pages, add_page_title
 #     unsafe_allow_html=True
 # )
 
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
 
 add_page_title()
 show_pages(
@@ -50,6 +44,14 @@ except:
 
 cookie_manager = stx.CookieManager()
 person_id = cookie_manager.get(cookie='person_id')
+
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 if not person_id:
     LIST_MENUS = ["📈 Login", "🗃 Register","Forgot Password"]

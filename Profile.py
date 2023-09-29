@@ -45,13 +45,13 @@ except:
 cookie_manager = stx.CookieManager()
 person_id = cookie_manager.get(cookie='person_id')
 
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden;}
-            footer {visibility: hidden;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+# hide_streamlit_style = """
+#             <style>
+#             #MainMenu {visibility: hidden;}
+#             footer {visibility: hidden;}
+#             </style>
+#             """
+# st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 if not person_id:
     LIST_MENUS = ["📈 Login", "🗃 Register","Forgot Password"]

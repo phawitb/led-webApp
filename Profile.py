@@ -22,13 +22,13 @@ from st_pages import Page, show_pages, add_page_title
 
 
 
-# hide_streamlit_style = """
-#             <style>
-#             #MainMenu {visibility: hidden;}
-#             footer {visibility: hidden;}
-#             </style>
-#             """
-# st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
 
 
 add_page_title()

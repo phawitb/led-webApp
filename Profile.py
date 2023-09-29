@@ -1,15 +1,5 @@
 import streamlit as st
-# st.markdown(
-#     """
-#     <style>
-#     .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
-#     .viewerBadge_text__1JaDK {
-#         display: none;
-#     }
-#     </style>
-#     """,
-#     unsafe_allow_html=True
-# )
+
 
 import extra_streamlit_components as stx
 from hash import hash_password,verify_password,load_users,save_users,isEmail
@@ -29,6 +19,18 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
+st.markdown(
+    """
+    <style>
+    .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
+    .viewerBadge_text__1JaDK {
+        display: none;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 
 add_page_title()
